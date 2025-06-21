@@ -110,6 +110,7 @@ function scrollToIndex(index) {
 function scrollByPixels(pixels) {
     let curX = calculatePositionInPixels();
     let newX = curX + pixels;
+    newX = Math.max(newX, 0);
 
     // Reinitialize images for simplicity
     reinitImages(newX);
@@ -228,17 +229,22 @@ function toggleVisibility(imIndex, isHidden) {
 
 function reinitImages(initX) {
     let imSizesLeft = Math.floor(initX / (imSize+gap));
-    offset = initX % (imSize + gap);
-    console.log(imSizesLeft);
+    let smallOffset = -initX % (imSize + gap);
+    console.log(smallOffset);
 
 
-    let lastIndex = curIndex;
-    console.log(curIndex);
-    curIndex = imSizesLeft;
+    curIndex = imSizesLeft-1;
     
     // The left-most edge case
     if (imSizesLeft < 2) {
+        offset = smallOffset - imSizesLeft * (imSize+gap)
         curIndex = 0;
+        console.log("First: " + offset);
+    }
+    // If there are hidden images to the left, the most common scenario
+    else {
+        offset = smallOffset - imSize - gap;
+        console.log("Second: " + offset);
     }
 
     console.log(curIndex);
